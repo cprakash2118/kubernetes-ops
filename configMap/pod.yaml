@@ -1,0 +1,114 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    cni.projectcalico.org/containerID: a74ecb3f97444da3d82f9bb557894af9940461a2d862dd2bcfd1942b6952e626
+    cni.projectcalico.org/podIP: 192.168.141.93/32
+    cni.projectcalico.org/podIPs: 192.168.141.93/32
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","kind":"Pod","metadata":{"annotations":{},"labels":{"purpose":"demonstrate-configmaps"},"name":"configmap-demo","namespace":"mynamespace-cm"},"spec":{"containers":[{"envFrom":[{"configMapRef":{"name":"my-configmap"}}],"image":"httpd","name":"configmap-demo-container"}]}}
+  creationTimestamp: "2023-04-11T10:10:23Z"
+  labels:
+    purpose: demonstrate-configmaps
+  name: configmap-demo
+  namespace: mynamespace-cm
+  resourceVersion: "389552"
+  uid: 1c5c24a3-30dd-42dc-b37e-79eedac1408d
+spec:
+  containers:
+  - envFrom:
+    - configMapRef:
+        name: my-configmap
+    image: httpd
+    imagePullPolicy: Always
+    name: configmap-demo-container
+    resources:
+        limit:
+           cpu: 100m 
+           memory: 100Mi
+        request:
+           cpu: 20m 
+           memory: 20Mi
+
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-wzxnb
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  nodeName: lab-wroker-node-k8.example.com
+  preemptionPolicy: PreemptLowerPriority
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: default
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  volumes:
+  - name: kube-api-access-wzxnb
+    projected:
+      defaultMode: 420
+      sources:
+      - serviceAccountToken:
+          expirationSeconds: 3607
+          path: token
+      - configMap:
+          items:
+          - key: ca.crt
+            path: ca.crt
+          name: kube-root-ca.crt
+      - downwardAPI:
+          items:
+          - fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+            path: namespace
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2023-04-11T10:10:23Z"
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2023-04-11T10:10:56Z"
+    status: "True"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2023-04-11T10:10:56Z"
+    status: "True"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: "2023-04-11T10:10:23Z"
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - containerID: cri-o://500757c6d26f9d31f974e79159208d3e449a5f3223a1f1a42888cab0e6b8b812
+    image: docker.io/library/httpd:latest
+    imageID: docker.io/library/httpd@sha256:08ad58e94f2076237a8073a277575d3fa21f9cc4a1b0158143e4ae637f181658
+    lastState: {}
+    name: configmap-demo-container
+    ready: true
+    restartCount: 0
+    started: true
+    state:
+      running:
+        startedAt: "2023-04-11T10:10:56Z"
+  hostIP: 172.168.21.72
+  phase: Running
+  podIP: 192.168.141.93
+  podIPs:
+  - ip: 192.168.141.93
+  qosClass: BestEffort
+  startTime: "2023-04-11T10:10:23Z"
